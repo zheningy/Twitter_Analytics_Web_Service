@@ -1,0 +1,54 @@
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar -files gs://phase2/user_mapper.py,gs://phase2/reducer.py,gs://phase2/stopwords -mapper user_mapper.py -reducer reducer.py -input gs://cmuccpublicdatasets/twitter/f17/* -output gs://phase2/keyword_uid_db
+
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar -files gs://phase2/normal_mapper.py,gs://phase2/reducer.py,gs://phase2/stopwords -mapper normal_mapper.py -reducer reducer.py -input gs://cmuccpublicdatasets/twitter/f17/* -output gs://phase2/keyword_db
+
+hadoop fs -mkdir /user/hadoop/topicword_db/
+hadoop fs -put * /user/hadoop/topicword_db/
+
+hadoop fs -mkdir /user/hadoop/userkeywords_db/
+hadoop fs -put * /user/hadoop/userkeywords_db/
+
+hadoop fs -mkdir /user/hadoop/allkeywords_db/
+hadoop fs -put * /user/hadoop/allkeywords_db/
+
+create 'userKeyWords',{NAME => 'data', COMPRESSION => 'SNAPPY',BLOCKSIZE=>4096}
+create 'allKeyWords',{NAME => 'data', COMPRESSION => 'SNAPPY',BLOCKSIZE=>4096}
+create 'topicWords',{NAME => 'data', COMPRESSION => 'SNAPPY',BLOCKSIZE=>4096}
+
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.columns=HBASE_ROW_KEY,data:hashtags,data:scores -Dimporttsv.bulk.output=/user/hadoop/user-hfiles userKeyWords /user/hadoop/userkeywords_db/
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.columns=HBASE_ROW_KEY,data:hashtags,data:scores -Dimporttsv.bulk.output=/user/hadoop/all-hfiles allKeyWords /user/hadoop/allkeywords_db/
+hbase org.apache.hadoop.hbase.mapreduce.ImportTsv -Dimporttsv.columns=HBASE_ROW_KEY,data:tid,data:uid,data:wordlist,data:scorelist,data:impactscore,data:text -Dimporttsv.bulk.output=/user/hadoop/topicword-hfiles topicWords /user/hadoop/topicword_db/
+
+hadoop fs -chown -R hbase:hbase /user/hadoop/topicword-hfiles
+hadoop fs -chown -R hbase:hbase /user/hadoop/user-hfiles
+hadoop fs -chown -R hbase:hbase /user/hadoop/all-hfiles
+
+hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /user/hadoop/topicword-hfiles topicWords
+hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /user/hadoop/user-hfiles userKeyWords
+hbase org.apache.hadoop.hbase.mapreduce.LoadIncrementalHFiles /user/hadoop/all-hfiles allKeyWords
+
+GRANT ALL PRIVILEGES ON *.* TO 'cc'@'%' IDENTIFIED BY 'awesome' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+CREATE DATABASE twitter;
+USE twitter;
+ALTER DATABASE twitter CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE TABLE userKeyWords (Keyword_Uid VARCHAR(40),Hashtags text,Scores text);
+ALTER TABLE userKeyWords CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE TABLE allKeyWords (Keyword VARCHAR(40),Hashtags text,Scores text);
+ALTER TABLE allKeyWords CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
+wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00000 & wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00001 & wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00002 & wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00003 & wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00004 & wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00005 & wget https://storage.googleapis.com/cc_phase2/hbaseData/part-00006
+wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00000 & wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00001 & wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00002 & wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00003 & wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00004 & wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00005 & wget https://storage.googleapis.com/phase2/keyword_uid_db/part-00006
+wget https://storage.googleapis.com/phase2/keyword_db/part-00000 & wget https://storage.googleapis.com/phase2/keyword_db/part-00001 & wget https://storage.googleapis.com/phase2/keyword_db/part-00002 & wget https://storage.googleapis.com/phase2/keyword_db/part-00003 & wget https://storage.googleapis.com/phase2/keyword_db/part-00004 & wget https://storage.googleapis.com/phase2/keyword_db/part-00005 & wget https://storage.googleapis.com/phase2/keyword_db/part-00006
+
+LOAD DATA LOCAL INFILE 'part-00000' INTO TABLE userKeyWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00000' INTO TABLE allKeyWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+CREATE INDEX kuid_index ON userKeyWords (Keyword_Uid);
+CREATE INDEX k_index ON allKeyWords (Keyword);
+
+sudo apt-get install byobu maven openjdk-8-jdk
+
+sudo yum install --enablerepo=epel byobu -y
+cd /etc/yum.repos.d/
+sudo wget http://download.opensuse.org/repositories/shells:fish:release:2/CentOS_6/shells:fish:release:2.repo
+sudo yum install fish -y

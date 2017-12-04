@@ -1,0 +1,40 @@
+wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00000 & wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00001 & wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00002 & wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00003 & wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00004 & wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00005 & wget https://storage.googleapis.com/cc_phase2/mysqlData/part-00006
+
+
+GRANT ALL PRIVILEGES ON *.* TO 'cc'@'%' IDENTIFIED BY 'awesome' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+CREATE DATABASE twitter;
+USE twitter;
+ALTER DATABASE twitter CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE TABLE topicWords (tid BIGINT,timeid BIGINT,uid BIGINT,topicwords text, scores text, impscore int, txt text);
+ALTER TABLE topicWords CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+
+USE twitter;
+LOAD DATA LOCAL INFILE 'part-00000' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00001' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00002' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00003' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00004' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00005' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+LOAD DATA LOCAL INFILE 'part-00006' INTO TABLE topicWords CHARACTER SET utf8mb4 FIELDS TERMINATED BY '\t';
+
+CREATE INDEX time_index ON topicWords (timeid);
+CREATE INDEX uid_index ON topicWords (uid);
+
+
+
+
+SELECT tid, topicwords, scores, impscore,txt FROM topicWords WHERE timeid between  1402126179 and  1484854251 and uid between 2317544238 and  2319391795;
+
+
+SELECT tid, topicwords, scores, impscore,txt FROM topicWords WHERE timeid between  1482385192 and  1482507160 and uid between 712649625283372324 and  712649625283377094;
+
+time_start 1482405044 time_end 1482527450 uid_start 776462114676434869 uid_end 776462114676438985 n1 8 n2 39
+
+http://ec2-54-81-138-112.compute-1.amazonaws.com/q3?uid_start=776462114676434869&uid_end=776462114676438985&time_start=1482405044&time_end=1482527450&n1=8&n2=39
+
+
+
+
+
+

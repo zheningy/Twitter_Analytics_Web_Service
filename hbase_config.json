@@ -1,0 +1,15 @@
+[
+  {
+    "Classification": "hbase-site",
+    "Properties": {
+      "hfile.block.cache.size": "0.7",
+      "hbase.regionserver.global.memstore.size": "0.1"
+    }
+  },
+  {
+    "Classification": "mapred-site",
+    "Properties": {
+      "mapred.child.java.opts": "-Xmx2048m"
+    }
+  }
+]

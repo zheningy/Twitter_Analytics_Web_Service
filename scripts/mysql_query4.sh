@@ -1,0 +1,6 @@
+cp mysql_query4.txt ~/
+cd ~
+mkdir query4_db
+cd query4_db
+wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00000 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00001 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00002 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00003 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00004 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00005 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00006 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00007 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00008 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00009 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00010 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00011 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00012 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00013 & wget https://storage.googleapis.com/cc_phase3/mysqlData/part-00014
+mysql -ucc -pawesome < ../mysql_query4.txt

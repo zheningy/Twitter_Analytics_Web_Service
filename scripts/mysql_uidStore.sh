@@ -1,0 +1,6 @@
+cp mysql_uidStore.txt ~/
+cd ~
+mkdir uid_db
+cd uid_db
+wget https://storage.googleapis.com/cc_phase3/uidData/part-00000 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00001 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00002 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00003 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00004 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00005 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00006 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00007 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00008 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00009 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00010 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00011 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00012 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00013 & wget https://storage.googleapis.com/cc_phase3/uidData/part-00014
+mysql -ucc -pawesome < ../mysql_uidStore.txt

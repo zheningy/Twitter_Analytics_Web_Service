@@ -1,0 +1,18 @@
+sudo apt-get -y install byobu
+
+byobu
+
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
+    -files gs://cc_phase2/mapper.py,gs://cc_phase2/bannedwords,gs://cc_phase2/stopwords \
+    -mapper mapper.py \
+    -reducer org.apache.hadoop.mapred.lib.IdentityReducer \
+    -input gs://cmuccpublicdatasets/twitter/f17/* \
+    -output gs://cc_phase2/mysqlData
+
+
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
+    -files gs://cc_phase2/time_mapper.py,gs://cc_phase2/bannedwords,gs://cc_phase2/stopwords \
+    -mapper time_mapper.py \
+    -reducer org.apache.hadoop.mapred.lib.IdentityReducer \
+    -input gs://cmuccpublicdatasets/twitter/f17/* \
+    -output gs://cc_phase2/hbaseData
